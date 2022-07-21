@@ -1,16 +1,14 @@
 module Enumerable
   def my_all?
     my_each do |element|
-      result = yield element
-      return result unless result
+      return false unless yield element
     end
     true
   end
 
   def my_any?
     my_each do |element|
-      result = yield element
-      return result if result
+      return true if yield element
     end
     false
   end
@@ -20,23 +18,18 @@ module Enumerable
 
     count = 0
     my_each do |element|
-      res = yield(element)
-      count += 1 if res
+      count += 1 if yield element
     end
     count
   end
 
   def my_inject(init = nil)
-    if init.nil?
-      result = self[0]
-      skip_first_iteratin = true
-    else
-      result = init
-      skip_first_iteratin = false
-    end
-
+    result = init
     my_each do |element|
-      next if skip_first_iteratin
+      if init.nil?
+        result = element
+        next
+      end
 
       result = yield(result, element)
     end
@@ -54,8 +47,7 @@ module Enumerable
 
   def my_none?
     my_each do |element|
-      result = yield element
-      return !result if result
+      return false if yield element
     end
     true
   end
